@@ -337,17 +337,18 @@ void TMemoryBuffer::ensureCanWrite(uint32_t len) {
   }
 
   // Allocate into a new pointer so we don't bork ours if it fails.
-  uint8_t* new_buffer = (uint8_t *)std::realloc(buffer_, new_size);
+  void* new_buffer = std::realloc(buffer_, new_size);
   if (new_buffer == NULL) {
     throw std::bad_alloc();
   }
   bufferSize_ = new_size;
 
-  rBase_ =  new_buffer + (rBase_ - buffer_) ;
-  rBound_ = new_buffer + (rBound_ - buffer_) ;
-  wBase_ =  new_buffer + (wBase_ - buffer_) ;
-  wBound_ = new_buffer + (wBound_ - buffer_);
-  buffer_  = new_buffer;
+  ptrdiff_t offset = (uint8_t*)new_buffer - buffer_;
+  buffer_ += offset;
+  rBase_ += offset;
+  rBound_ += offset;
+  wBase_ += offset;
+  wBound_ = buffer_ + bufferSize_;
 }
 
 void TMemoryBuffer::writeSlow(const uint8_t* buf, uint32_t len) {
