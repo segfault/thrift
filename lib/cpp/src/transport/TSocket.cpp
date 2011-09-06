@@ -17,18 +17,31 @@
  * under the License.
  */
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 #include <cstring>
 #include <sstream>
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
+#endif
+#ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
+#endif
+#ifdef HAVE_SYS_POLL_H
 #include <sys/poll.h>
+#endif
 #include <sys/types.h>
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #include <netinet/tcp.h>
-#include <netdb.h>
+#endif
+#ifdef HAVE_UNISTD_H
 #include <unistd.h>
+#endif
 #include <errno.h>
 #include <fcntl.h>
 
@@ -482,9 +495,10 @@ void TSocket::write(const uint8_t* buf, uint32_t len) {
   while (sent < len) {
     uint32_t b = write_partial(buf + sent, len - sent);
     if (b == 0) {
-      // We assume that we got 0 because send() errored with EAGAIN due to
-      // lack of system resources; release the CPU for a bit.
-      usleep(50);
+      // This should only happen if the timeout set with SO_SNDTIMEO expired.
+      // Raise an exception.
+      throw TTransportException(TTransportException::TIMED_OUT,
+                                "send timeout expired");
     }
     sent += b;
   }
