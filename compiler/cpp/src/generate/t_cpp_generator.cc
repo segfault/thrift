@@ -1758,7 +1758,7 @@ void t_cpp_generator::generate_service_interface_factory(t_service* tservice,
       "const ::apache::thrift::TConnectionInfo& connInfo) = 0;" <<
     endl <<
     indent() << "virtual void releaseHandler(" << base_if_name <<
-    "* handler) = 0;" << endl;
+    "* /* handler */) = 0;" << endl;
 
   indent_down();
   f_header_ <<
@@ -1781,7 +1781,7 @@ void t_cpp_generator::generate_service_interface_factory(t_service* tservice,
     indent() << "  return iface_.get();" << endl <<
     indent() << "}" << endl <<
     indent() << "virtual void releaseHandler(" << base_if_name <<
-    "* handler) {}" << endl;
+    "* /* handler */) {}" << endl;
 
   f_header_ <<
     endl <<
@@ -2926,7 +2926,9 @@ void ProcessorGenerator::generate_factory() {
   f_header_ <<
     template_header_ <<
     "class " << factory_class_name_ <<
-      " : public ::apache::thrift::TProcessorFactory {" << endl <<
+      " : public ::apache::thrift::" <<
+        (style_ == "Cob" ? "async::TAsyncProcessorFactory" :  "TProcessorFactory") <<
+        " {" << endl <<
     " public:" << endl;
   indent_up();
 
@@ -2935,7 +2937,8 @@ void ProcessorGenerator::generate_factory() {
       if_factory_name << " >& handlerFactory) :" << endl <<
     indent() << "    handlerFactory_(handlerFactory) {}" << endl <<
     endl <<
-    indent() << "::boost::shared_ptr< ::apache::thrift::TProcessor > " <<
+    indent() << "::boost::shared_ptr< ::apache::thrift::" <<
+      (style_ == "Cob" ? "async::TAsyncProcessor" :  "TProcessor") << " > " <<
       "getProcessor(const ::apache::thrift::TConnectionInfo& connInfo);" <<
       endl;
 
@@ -2961,7 +2964,8 @@ void ProcessorGenerator::generate_factory() {
   // Generate the getProcessor() method
   f_out_ <<
     template_header_ <<
-    indent() << "::boost::shared_ptr< ::apache::thrift::TProcessor > " <<
+    indent() << "::boost::shared_ptr< ::apache::thrift::" <<
+      (style_ == "Cob" ? "async::TAsyncProcessor" :  "TProcessor") << " > " <<
       factory_class_name_ << template_suffix_ << "::getProcessor(" <<
       "const ::apache::thrift::TConnectionInfo& connInfo) {" << endl;
   indent_up();
@@ -2971,7 +2975,8 @@ void ProcessorGenerator::generate_factory() {
       " > cleanup(handlerFactory_);" << endl <<
     indent() << "::boost::shared_ptr< " << if_name_ << " > handler(" <<
       "handlerFactory_->getHandler(connInfo), cleanup);" << endl <<
-    indent() << "::boost::shared_ptr< ::apache::thrift::TProcessor > " <<
+    indent() << "::boost::shared_ptr< ::apache::thrift::" <<
+      (style_ == "Cob" ? "async::TAsyncProcessor" :  "TProcessor") << " > " <<
       "processor(new " << class_name_ << template_suffix_ <<
       "(handler));" << endl <<
     indent() << "return processor;" << endl;

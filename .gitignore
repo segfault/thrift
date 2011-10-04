@@ -129,6 +129,7 @@
 /lib/rb/ext/thrift_native.so
 /lib/rb/spec/gen-*
 /lib/rb/test/
+/lib/rb/thrift-*.gem
 /lib/php/Makefile
 /lib/php/Makefile.in
 /lib/php/src/ext/thrift_protocol/.deps
@@ -179,6 +180,7 @@
 /test/py/Makefile
 /test/py/Makefile.in
 /test/py/gen-py
+/test/py/gen-py-*
 /test/py.twisted/Makefile
 /test/py.twisted/Makefile.in
 /test/py.twisted/_trial_temp/
@@ -187,4 +189,5 @@
 /test/rb/gen-*
 /test/rb/Makefile
 /test/rb/Makefile.in
+/thrift.exe
 /ylwrap
