@@ -483,7 +483,7 @@ void t_java_generator::generate_consts(std::vector<t_const*> consts) {
     return;
   }
 
-  string f_consts_name = package_dir_+"/Constants.java";
+  string f_consts_name = package_dir_+ '/' + program_name_ + "Constants.java";
   ofstream f_consts;
   f_consts.open(f_consts_name.c_str());
 
@@ -494,7 +494,7 @@ void t_java_generator::generate_consts(std::vector<t_const*> consts) {
     java_type_imports();
 
   f_consts <<
-    "public class Constants {" << endl <<
+    "public class " << program_name_ << "Constants {" << endl <<
     endl;
   indent_up();
   vector<t_const*>::iterator c_iter;
@@ -2546,7 +2546,7 @@ void t_java_generator::generate_service_server(t_service* tservice) {
   string extends = "";
   string extends_processor = "";
   if (tservice->get_extends() == NULL) {
-    extends_processor = "org.apache.thrift.TBaseProcessor";
+    extends_processor = "org.apache.thrift.TBaseProcessor<I>";
   } else {
     extends = type_name(tservice->get_extends());
     extends_processor = extends + ".Processor";
@@ -3266,7 +3266,7 @@ string t_java_generator::declare_field(t_field* tfield, bool init) {
     }
   }
   result += "; // ";
-  if (tfield->get_xsd_optional()) {
+  if (tfield->get_req() == t_field::T_OPTIONAL) {
     result += "optional";
   } else {
     result += "required";
@@ -4125,6 +4125,6 @@ THRIFT_REGISTER_GENERATOR(java, "Java",
 "    nocamel:         Do not use CamelCase field accessors with beans.\n"
 "    hashcode:        Generate quality hashCode methods.\n"
 "    android_legacy:  Do not use java.io.IOException(throwable) (available for Android 2.3 and above).\n"
-"    java5:           Generate Java 1.5 compliant code (includes android_legacy flag)."
+"    java5:           Generate Java 1.5 compliant code (includes android_legacy flag).\n"
 )
 

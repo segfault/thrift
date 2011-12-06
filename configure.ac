@@ -19,7 +19,7 @@
 
 AC_PREREQ(2.65)
 
-AC_INIT([thrift], [0.8.0-dev])
+AC_INIT([thrift], [0.9.0-dev])
 
 AC_CONFIG_AUX_DIR([.])
 
@@ -445,6 +445,7 @@ AC_ARG_ENABLE(boostthreads,
 if test "x[$]ENABLE_BOOSTTHREADS" = "x1"; then
   AC_MSG_WARN(enable boostthreads)
   AC_DEFINE([USE_BOOST_THREAD], [1], [experimental --enable-boostthreads that replaces POSIX pthread by boost::thread])
+  LIBS="-lboost_thread $LIBS"
 fi
 
 AM_CONDITIONAL([WITH_BOOSTTHREADS], [test "x[$]ENABLE_BOOSTTHREADS" = "x1"])
@@ -528,7 +529,6 @@ fi
 if test "$have_ruby" = "yes" ; then
   echo
   echo "Using Ruby ................... : $RUBY"
-  echo "Using rspec .................. : $RSPEC"
 fi
 if test "$have_haskell" = "yes" ; then
   echo
